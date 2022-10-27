@@ -32,7 +32,10 @@
             <h1 class="text-center">Reloj</h1>
         </article>
         <article id="chrono" class="tab-pane fade">
-            <h1 class="text-center">Cronometro</h1>
+            <h1 class="text-center">Cronómetro</h1>
+              <label for="chronoTime"> Tiempo del cronometro:</label>
+              <input type="time" id="chronoTime" name="chronoTime" min="00:00:00" max="99:99:99" required>
+              <input class="boton" type="submit" onclick="startChrono()" value="Iniciar cronómetro">
         </article>
         <article id="alarm" class="tab-pane fade">
             <h1 class="text-center">Alarma</h1>
