@@ -34,8 +34,10 @@
         <article id="chrono" class="tab-pane fade">
             <h1 class="text-center">Cronómetro</h1>
               <label for="chronoTime"> Tiempo del cronometro:</label>
-              <input type="time" id="chronoTime" name="chronoTime" min="00:00:00" max="99:99:99" required>
+              <input type="time" id="chronoTime" name="chronoTime" step="2" value="00:00:00" required>
               <input class="boton" type="submit" onclick="startChrono()" value="Iniciar cronómetro">
+
+               <!-- document.getElementById("n4").innerHTML = topFive[3][0]; -->
         </article>
         <article id="alarm" class="tab-pane fade">
             <h1 class="text-center">Alarma</h1>
