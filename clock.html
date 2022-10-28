@@ -9,12 +9,12 @@
   <title>Clock</title>
 </head>
 
-<body>
+<body onload="onloadFunction()">
   <header>
-    <button class="tablink" onclick="openPage('clock', this, 'red')" id="defaultOpen">Reloj</button>
+    <button class="tablink" onclick="openPage('clock', this, 'red')" >Reloj</button>
     <button class="tablink" onclick="openPage('alarm', this, 'blue')">Alarma</button>
     <button class="tablink" onclick="openPage('chrono', this, 'green')">Cronómetro</button>
-    <button class="tablink" onclick="openPage('temp', this, 'orange')">Temporizador</button>
+    <button class="tablink" onclick="openPage('temp', this, 'orange')" id="defaultOpen">Temporizador</button>
   </header>
   <main>
     <article id="clock" class="tabcontent">
@@ -28,16 +28,19 @@
     <article id="chrono" class="tabcontent">
       <h1>Cronómetro</h1>
       <input class="boton" type="submit" onclick="startChrono()" value="Iniciar cronómetro">
+      <input class="boton" type="submit" onclick="stopChrono()" value="Pausar cronómetro">
+      <input class="boton" type="submit" onclick="resetChrono()" value="Resetear cronómetro">
+      <br>
       <label for="chronoTime"> Tiempo del cronometro:</label>
-      <p id="chronoCurrentTimer">00:00:00</p>
+      <p id="chronoCurrentTimer">00:00:00:000</p>
 
     </article>
     <article id="temp" class="tabcontent">
       <h1>Temporizador </h1>
       <label for="temmpTime"> Tiempo del temporizador:</label>
-      <input type="time" id="tempTime" name="tempTime" step="2" value="00:00:00" required>
-      <input class="boton" type="submit" onclick="startChrono()" value="Iniciar Temporizador">
-      <p id="tempCurrentTimer">00:00:00</p>
+      <input type="time" id="tempTime" name="tempTime" step="0.1" required>
+      <input class="boton" type="submit" onclick="startTemp()" value="Iniciar Temporizador">
+      <p id="tempCurrentTimer">00:00:00:000</p>
     </article>
   </main>
 

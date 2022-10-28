@@ -40,17 +40,25 @@ body, html, main{
 }
 
 #clock {
-    background-color: red;
+    background-color: rgb(187, 74, 74);
 }
 
 #chrono {
-    background-color: green;
+    background-color: rgb(101, 167, 101);
 }
 
 #alarm {
-    background-color: blue;
+    background-color: rgb(86, 86, 160);
 }
 
 #temp {
-    background-color: orange;
+    background-color: rgb(196, 154, 77);
+}
+
+p{
+    font-size: larger;
+}
+
+article > *{
+    margin: 1%;
 }
