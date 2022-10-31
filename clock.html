@@ -37,9 +37,13 @@
     </article>
     <article id="temp" class="tabcontent">
       <h1>Temporizador </h1>
-      <label for="temmpTime"> Tiempo del temporizador:</label>
       <input type="time" id="tempTime" name="tempTime" step="0.1" required>
+      <br>
       <input class="boton" type="submit" onclick="startTemp()" value="Iniciar Temporizador">
+      <input class="boton" type="submit" onclick="stopTemp()" value="Pausar temporizador">
+      <input class="boton" type="submit" onclick="resetTemp()" value="Resetear temporizador">
+      <br>
+      <label for="tempTime"> Tiempo del temporizador:</label>
       <p id="tempCurrentTimer">00:00:00:000</p>
     </article>
   </main>

@@ -30,16 +30,29 @@ const interval = setInterval(() => {
 }, 1000);
 
 let chrono;
+let savedChronoTime;
 let isChronoStarted = false;
+let chronoPause = localStorage.getItem("chronoPause");
 
 let temp;
 let isTempStarted = false;
+let tempPause = localStorage.getItem("tempPause");
 
 function onloadFunction() {
+    // let chronoTime = localStorage.getItem("chronoTime");
+    // if (chronoTime === null || chronoTime === "00:00:00:000") {
     resetChrono();
+    //} else {
+    //        actualizeChronoValue();
+    //        startChrono();
+
+    //}
 }
 
+/* Chorno functions */
+
 function startChrono() {
+    localStorage.setItem("chronoPause", false);
     if (!isChronoStarted) {
         isChronoStarted = true;
         const chronoTime = localStorage.getItem("chronoTime").split(":");
@@ -65,53 +78,90 @@ function startChrono() {
             }
             let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
             localStorage.setItem("chronoTime", formatedTime);
+            localStorage.setItem("savedChronoTime", new Date().toString().substring(16, 24));
             document.getElementById("chronoCurrentTimer").innerHTML = formatedTime;
         }, 10);
     }
 }
 
 function stopChrono() {
+    localStorage.setItem("chronoPause", true);
     clearInterval(chrono);
     isChronoStarted = false;
 }
 
 function resetChrono() {
+    localStorage.setItem("chronoPause", true);
     clearInterval(chrono);
     localStorage.setItem("chronoTime", "00:00:00:000");
+    localStorage.setItem("savedChronoTime", "00:00:00:000");
     document.getElementById("chronoCurrentTimer").innerHTML = "00:00:00:000";
     isChronoStarted = false;
 }
 
+function actualizeChronoValue() {
+    const currentTime = new Date().toString().substring(16, 24).split(":");
+    const pastTime = localStorage.getItem("savedChronoTime").split(":");
+    const pastChorno = localStorage.getItem("chronoTime").split(":");
+    const timeToAdd = subTime(currentTime, pastTime);
+    const newChornoTime = addTime(timeToAdd, pastChorno);
+    localStorage.setItem("chronoTime", newChornoTime);
+}
+
+/*Tem functions*/
 
 function startTemp() {
-    let tempTime = document.getElementById("tempTime").value.split(":");
-    let hours = parseInt(tempTime[0]);
-    let minutes = parseInt(tempTime[1]);
-    let seconds = parseInt(tempTime[2].split(".")[0]);
-    let miliseconds = parseInt(tempTime[2].split(".")[1]);
-    temp = setInterval(() => {
-        if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds <= 0) {
-            document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
-            clearInterval(temp);
-        }
-        else {
-            miliseconds = - Date.now();
-            if (miliseconds < 0) {
-                startTime = Date.now();
-                seconds--;
+    localStorage.setItem("tempPause", false);
+    if (!isTempStarted) {
+        isTempStarted = true;
+        const tempTime = document.getElementById("tempTime").value.split(":");
+        let hours = parseInt(tempTime[0]);
+        let minutes = parseInt(tempTime[1]);
+        let seconds = parseInt(tempTime[2].split(".")[0]);
+        let miliseconds = parseInt(tempTime[2].split(".")[1]);
+        temp = setInterval(() => {
+            if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds <= 0) {
+                document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
+                clearInterval(temp);
             }
-            if (seconds < 0) {
-                seconds = 59;
-                minutes--;
+            else {
+                miliseconds = - Date.now();
+                if (miliseconds < 0) {
+                    startTime = Date.now();
+                    seconds--;
+                }
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                }
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                }
+                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
+                localStorage.setItem("tempTime", formatedTime);
+                localStorage.setItem("savedTempTime", new Date().toString().substring(16, 24));
+                document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
             }
-            if (minutes < 0) {
-                minutes = 59;
-                hours--;
-            }
-            document.getElementById("tempCurrentTimer").innerHTML = formatTime(hours, minutes, seconds, miliseconds);
-        }
-    }, 1000);
+        }, 1000);
+    }
 }
+
+function stopTemp() {
+    localStorage.setItem("tempPause", true);
+    clearInterval(temp);
+    isTempStarted = false;
+}
+
+function resetTemp() {
+    localStorage.setItem("tempPause", true);
+    clearInterval(temp);
+    localStorage.setItem("tempTime", "00:00:00:000");
+    localStorage.setItem("savedTempTime", "00:00:00:000");
+    document.getElementById("tempCurrentTimer").innerHTML = "00:00:00:000";
+    isChronoStarted = false;
+}
+/* Generic functions */
 
 function formatTime(hours, minutes, seconds, miliseconds) {
     miliseconds = formatMiliseconds(miliseconds);
@@ -140,4 +190,30 @@ function formatSecMinHour(format) {
         format = "0" + format;
     }
     return format;
+}
+
+function addTime(timeA, timeB) {
+    const addedTime = [];
+    for (let i = 0; i < timeA.length; i++) {
+        let add = parseInt(timeA[i]) + parseInt(timeB[i]);
+        if (add > 60) {
+            addedTime[i - 1]++;
+            add -= 60;
+        }
+        addedTime[i] = add;
+    }
+    return addedTime;
+}
+
+function subTime(timeA, timeB) {
+    const addedTime = [];
+    for (let i = 0; i < timeA.length; i++) {
+        let sub = parseInt(timeA[i]) - parseInt(timeB[i]);
+        if (sub <= 0) {
+            addedTime[i - 1]--;
+            sub = + 60;
+        }
+        addedTime[i] = sub;
+    }
+    return addedTime;
 }
