@@ -39,9 +39,14 @@
       <h1>Temporizador </h1>
       <input type="time" id="tempTime" name="tempTime" step="0.1" required>
       <br>
-      <input class="boton" type="submit" onclick="startTemp()" value="Iniciar Temporizador">
-      <input class="boton" type="submit" onclick="stopTemp()" value="Pausar temporizador">
-      <input class="boton" type="submit" onclick="resetTemp()" value="Resetear temporizador">
+      <input class="button" type="submit" onclick="startTemp()" value="Iniciar Temporizador">
+      <input class="button" type="submit" onclick="stopTemp()" value="Pausar temporizador">
+      <input class="button" type="submit" onclick="resetTemp()" value="Resetear temporizador">
+      <br>
+      <button id="loopButton" name="loopButton" onclick="loopOnOff()">Modo bucle: Apagado</button>
+      <br>
+      <input type="time" id="tempTimeInterval" name="tempTimeInterval" step="0.1">
+      <button id="intervalButton" name="intervalButton" onclick="intervalOnOff()">Modo intervalo: Apagado</button>
       <br>
       <label for="tempCurrentTimer"> Tiempo del temporizador:</label>
       <p id="tempCurrentTimer" name="tempCurrentTimer">00:00:00:000</p>
