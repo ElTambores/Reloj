@@ -35,6 +35,9 @@ let isChronoStarted = false;
 let chronoPause = localStorage.getItem("chronoPause");
 
 let temp;
+let loopMode = false;
+let currentTempTime;
+let savedTempTime;
 let isTempStarted = false;
 let tempPause = localStorage.getItem("tempPause");
 
@@ -42,6 +45,7 @@ function onloadFunction() {
     // let chronoTime = localStorage.getItem("chronoTime");
     // if (chronoTime === null || chronoTime === "00:00:00:000") {
     resetChrono();
+    resetTemp();
     //} else {
     //        actualizeChronoValue();
     //        startChrono();
@@ -60,11 +64,17 @@ function startChrono() {
         let hours = parseInt(chronoTime[0]);
         let minutes = parseInt(chronoTime[1]);
         let seconds = parseInt(chronoTime[2]);
-        let miliseconds = parseInt(chronoTime[3]);
+        let initMiliseconds = parseInt(chronoTime[3]);
+        let miliseconds = 0;
 
         chrono = setInterval(() => {
-            miliseconds = Date.now() - startTime;
+            if (initMiliseconds != 0) {
+                miliseconds = Date.now() - startTime + initMiliseconds;
+            } else {
+                miliseconds = Date.now() - startTime;
+            }
             if (miliseconds > 999) {
+                initMiliseconds = 0;
                 startTime = Date.now();
                 seconds++;
             }
@@ -80,7 +90,7 @@ function startChrono() {
             localStorage.setItem("chronoTime", formatedTime);
             localStorage.setItem("savedChronoTime", new Date().toString().substring(16, 24));
             document.getElementById("chronoCurrentTimer").innerHTML = formatedTime;
-        }, 10);
+        }, 1);
     }
 }
 
@@ -112,21 +122,46 @@ function actualizeChronoValue() {
 
 function startTemp() {
     localStorage.setItem("tempPause", false);
+    let tempInput = document.getElementById("tempTime").value;
+
+    if (tempInput === "") {
+        return;
+    }
     if (!isTempStarted) {
         isTempStarted = true;
-        const tempTime = document.getElementById("tempTime").value.split(":");
+        let tempTime = localStorage.getItem("tempTime");
+        if (tempTime === "00:00:00:000") {
+            tempTime = tempInput;
+        }
+        currentTempTime = tempTime;
+        tempTime = tempTime.split(":");
+        let startTime = Date.now();
         let hours = parseInt(tempTime[0]);
         let minutes = parseInt(tempTime[1]);
         let seconds = parseInt(tempTime[2].split(".")[0]);
-        let miliseconds = parseInt(tempTime[2].split(".")[1]);
+        let initMiliseconds = parseInt(tempTime[2].split(".")[1]);
+        if (isNaN(initMiliseconds)) {
+            initMiliseconds = parseInt(tempTime[3]);
+        }
+        let miliseconds = 999;
+
         temp = setInterval(() => {
-            if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds <= 0) {
-                document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
-                clearInterval(temp);
+            if (hours == 0 && minutes == 0 && seconds == 0 && (999 - miliseconds) <= 0) {
+                resetTemp();
+                if (loopMode) {
+
+                } else {
+                    document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
+                }
             }
             else {
-                miliseconds = - Date.now();
-                if (miliseconds < 0) {
+                if (initMiliseconds != 0) {
+                    miliseconds = Date.now() - startTime + initMiliseconds;
+                } else {
+                    miliseconds = Date.now() - startTime;
+                }
+                if (miliseconds > 999) {
+                    initMiliseconds = 0;
                     startTime = Date.now();
                     seconds--;
                 }
@@ -138,12 +173,12 @@ function startTemp() {
                     minutes = 59;
                     hours--;
                 }
-                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
+                let formatedTime = formatTime(hours, minutes, seconds, (999 - miliseconds));
                 localStorage.setItem("tempTime", formatedTime);
                 localStorage.setItem("savedTempTime", new Date().toString().substring(16, 24));
                 document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
             }
-        }, 1000);
+        }, 1);
     }
 }
 
@@ -159,7 +194,7 @@ function resetTemp() {
     localStorage.setItem("tempTime", "00:00:00:000");
     localStorage.setItem("savedTempTime", "00:00:00:000");
     document.getElementById("tempCurrentTimer").innerHTML = "00:00:00:000";
-    isChronoStarted = false;
+    isTempStarted = false;
 }
 /* Generic functions */
 
