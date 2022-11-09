@@ -28,14 +28,15 @@ document.getElementById("defaultOpen").click();
 
 function onloadFunction() {
     let chronoStatus = localStorage.getItem("chronoStatus");
-    if (chronoStatus === "notStarted") {
+    if (chronoStatus === "notStarted" || chronoStatus== null) {
         resetChrono();
     } else {
         if (chronoStatus === "play") {
-            let lastTime = Number(localStorage.getItem("savedChronoTime"));
-            let currentTime = new Date();
-            let currentChronoTime = getNewTime(lastTime, currentTime);
-            document.getElementById("chronoCurrentTimer").innerHTML = currentChronoTime;
+            // let lastTime = localStorage.getItem("savedChronoTime");
+            // let currentTime = new Date();
+            // let currentChronoTime = getNewTime(lastTime, currentTime);
+            // document.getElementById("chronoCurrentTimer").innerHTML = currentChronoTime;
+            document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
             startChrono();
         } else if (chronoStatus === "pause") {
             document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
@@ -56,15 +57,15 @@ function toMiliSeconds(stringTime) {
     return (Number(time[0]) * 3600000) + (Number(time[1]) * 60000) + (Number(time[2]) * 1000) + Number(time[3]);
 }
 
-// function toTime(miliseconds) {
-//     let hour = Math.floor(miliseconds / 3600000);
-//     let remMili = miliseconds - (hour * 3600000);
-//     let minutes = Math.floor(remMili / 60000);
-//     remMili = remMili - (minutes * 60000);
-//     let seconds = Math.floor(remMili / 1000);
-//     let miliseconds = remMili - (seconds * 1000);
-//     return formatTime(hour,minutes, seconds, miliseconds);
-// }
+function toTime(miliseconds) {
+    let hour = Math.floor(miliseconds / 3600000);
+    let remMili = miliseconds - (hour * 3600000);
+    let minutes = Math.floor(remMili / 60000);
+    remMili = remMili - (minutes * 60000);
+    let seconds = Math.floor(remMili / 1000);
+     miliseconds = remMili - (seconds * 1000);
+    return formatTime(hour,minutes, seconds, miliseconds);
+}
 
 /* Funciones de Reloj*/
 
@@ -77,10 +78,8 @@ const interval = setInterval(() => {
 
 let chrono;
 let isChronoStarted = false;
-let chronoPause = localStorage.getItem("chronoPause");
 
 function startChrono() {
-    localStorage.setItem("chronoPause", false);
     if (!isChronoStarted) {
         isChronoStarted = true;
         const chronoTime = localStorage.getItem("chronoTime").split(":");
@@ -133,7 +132,6 @@ function resetChrono() {
 }
 
 
-
 /*Funciones Temporizador*/
 
 let temp;
@@ -141,12 +139,11 @@ let loopModeActivated = false;
 let intervalModeActivated = false;
 let isIntervalWaiting = false;
 let intervalTempTime;
+let mainTempTime;
 let currentTempTime;
 let isTempStarted = false;
-let tempPause = localStorage.getItem("tempPause");
 
 function startTemp() {
-    localStorage.setItem("tempPause", false);
     let tempInput = document.getElementById("tempTime").value;
     if (tempInput === "") {
         return;
@@ -176,9 +173,15 @@ function startTemp() {
                     isIntervalWaiting = false;
                     localStorage.setItem("tempTime", intervalTempTime);
                     startTemp();
-
                 }
                 else if (loopModeActivated) {
+                    if(isIntervalWaiting){
+                        isIntervalWaiting = false;
+                        localStorage.setItem("tempTime", intervalTempTime);
+                        startTemp();
+                    } else{
+
+                    }
                     localStorage.setItem("tempTime", currentTempTime);
                     startTemp();
                 } else {
@@ -239,10 +242,10 @@ function intervalOnOff() {
     if (intervalModeActivated) {
         isIntervalWaiting = true;
         document.getElementById("intervalButton").innerHTML = "Modo intervalo: Encendido";
-        intervalTempTime = document.getElementById("tempCurrentTimer");
+        localStorage.setItem("tempTimeInterval", document.getElementById("tempTimeInterval").value);
     } else {
         document.getElementById("intervalButton").innerHTML = "Modo intervalo: Apagado";
-        intervalTempTime = document.getElementById("00:00:00:000");
+        localStorage.setItem("tempTimeInterval", "00:00:00:000");
     }
 }
 
@@ -275,30 +278,4 @@ function formatSecMinHour(format) {
         format = "0" + format;
     }
     return format;
-}
-
-function addTime(timeA, timeB) {
-    const addedTime = [];
-    for (let i = 0; i < timeA.length; i++) {
-        let add = parseInt(timeA[i]) + parseInt(timeB[i]);
-        if (add > 60) {
-            addedTime[i - 1]++;
-            add -= 60;
-        }
-        addedTime[i] = add;
-    }
-    return addedTime;
-}
-
-function subTime(timeA, timeB) {
-    const addedTime = [];
-    for (let i = 0; i < timeA.length; i++) {
-        let sub = parseInt(timeA[i]) - parseInt(timeB[i]);
-        if (sub <= 0) {
-            addedTime[i - 1]--;
-            sub = + 60;
-        }
-        addedTime[i] = sub;
-    }
-    return addedTime;
 }
