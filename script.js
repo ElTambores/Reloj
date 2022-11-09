@@ -27,22 +27,8 @@ document.getElementById("defaultOpen").click();
 /*Funciones de persistencia de datos*/
 
 function onloadFunction() {
-    let chronoStatus = localStorage.getItem("chronoStatus");
-    if (chronoStatus === "notStarted" || chronoStatus== null) {
-        resetChrono();
-    } else {
-        if (chronoStatus === "play") {
-            // let lastTime = localStorage.getItem("savedChronoTime");
-            // let currentTime = new Date();
-            // let currentChronoTime = getNewTime(lastTime, currentTime);
-            // document.getElementById("chronoCurrentTimer").innerHTML = currentChronoTime;
-            document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
-            startChrono();
-        } else if (chronoStatus === "pause") {
-            document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
-            stopChrono();
-        }
-    }
+    checkAlarms();
+    checkCrono();
     resetTemp();
 }
 
@@ -63,8 +49,8 @@ function toTime(miliseconds) {
     let minutes = Math.floor(remMili / 60000);
     remMili = remMili - (minutes * 60000);
     let seconds = Math.floor(remMili / 1000);
-     miliseconds = remMili - (seconds * 1000);
-    return formatTime(hour,minutes, seconds, miliseconds);
+    miliseconds = remMili - (seconds * 1000);
+    return formatTime(hour, minutes, seconds, miliseconds);
 }
 
 /* Funciones de Reloj*/
@@ -73,6 +59,86 @@ const interval = setInterval(() => {
     document.getElementById("hour").innerHTML = new Date().toString().substring(16, 24);
 }, 1000);
 
+/* Funciones Alarma */
+
+const alarmList = [];
+let alarmWaitng = false;
+let alarmChecker;
+let alarmListString = `<tr>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                                <th>Borrar</th>
+                                <th>Editar</th>
+                            </tr>`;
+
+class Alarm {
+    constructor(time, status) {
+        this.time = time;
+        this.status = status;
+    }
+}
+
+function checkAlarms() {
+    actualizeAlarmList();
+    alarmChecker = setInterval(() => {
+        let currentTime = new Date().toString().substring(16, 24);
+        for (let i = 0; i < alarmList.length; i++) {
+            if (alarmList[i].time === currentTime && alarmList[i].status === 'Activada') {
+                alarmActivation(i);
+            }
+        }
+    }, 1000);
+}
+
+function alarmActivation(i) {
+    let alarmAudio = document.getElementById("AlarmAudio");
+    alarmAudio.play();
+    alert("Alarma de las " + alarmList[i].time + ".");
+}
+
+function addAlarm() {
+    alarmWaitng = true;
+    let newAlarmTime = document.getElementById("alarmTime").value;
+    const newAlarm = new Alarm(newAlarmTime, "Activada");
+    alarmList.push(newAlarm);
+    actualizeAlarmList();
+}
+
+function actualizeAlarmList() {
+    alarmListString = `<tr>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                                <th>Borrar</th>
+                                <th>Editar</th>
+                            </tr>`;
+    for (let i = 0; i < alarmList.length; i++) {
+        alarmListString += `
+        <tr> <td>` + alarmList[i].time + `</td>
+        <td><button onclick="enableAlarm(`+ i + `)">` + alarmList[i].status + `</button></td>
+        <td><button onclick="deleteAlarm(`+ i + `)">Borrar alarma</button></td>
+        <td><button onclick="editeAlarm(`+ i + `)">Editar Alarma</button></td>
+      </tr>`;
+    }
+    document.getElementById("alarmList").innerHTML = alarmListString;
+}
+
+function enableAlarm(i){
+    if(alarmList[i].status === "Activada"){
+        alarmList[i].status = "Apagada";
+    }else{
+        alarmList[i].status = "Activada";
+    }
+    actualizeAlarmList();
+}
+
+function deleteAlarm(i){
+    alarmList.splice(i,1);
+    actualizeAlarmList();
+}
+
+function editeAlarm(i){
+
+}
 
 /* Functiones Cronometro */
 
@@ -131,6 +197,24 @@ function resetChrono() {
     isChronoStarted = false;
 }
 
+function checkCrono(){
+    let chronoStatus = localStorage.getItem("chronoStatus");
+    if (chronoStatus === "notStarted" || chronoStatus == null) {
+        resetChrono();
+    } else {
+        if (chronoStatus === "play") {
+            // let lastTime = localStorage.getItem("savedChronoTime");
+            // let currentTime = new Date();
+            // let currentChronoTime = getNewTime(lastTime, currentTime);
+            // document.getElementById("chronoCurrentTimer").innerHTML = currentChronoTime;
+            document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
+            startChrono();
+        } else if (chronoStatus === "pause") {
+            document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
+            stopChrono();
+        }
+    }
+}
 
 /*Funciones Temporizador*/
 
@@ -175,11 +259,11 @@ function startTemp() {
                     startTemp();
                 }
                 else if (loopModeActivated) {
-                    if(isIntervalWaiting){
+                    if (isIntervalWaiting) {
                         isIntervalWaiting = false;
                         localStorage.setItem("tempTime", intervalTempTime);
                         startTemp();
-                    } else{
+                    } else {
 
                     }
                     localStorage.setItem("tempTime", currentTempTime);

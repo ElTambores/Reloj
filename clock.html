@@ -12,9 +12,9 @@
 <body onload="onloadFunction()">
   <header>
     <button class="tablink" onclick="openPage('clock', this, 'red')" >Reloj</button>
-    <button class="tablink" onclick="openPage('alarm', this, 'blue')">Alarma</button>
+    <button class="tablink" onclick="openPage('alarm', this, 'blue')" id="defaultOpen">Alarma</button>
     <button class="tablink" onclick="openPage('chrono', this, 'green')">Cronómetro</button>
-    <button class="tablink" onclick="openPage('temp', this, 'orange')" id="defaultOpen">Temporizador</button>
+    <button class="tablink" onclick="openPage('temp', this, 'orange')" >Temporizador</button>
   </header>
   <main>
     <article id="clock" class="tabcontent">
@@ -24,9 +24,10 @@
     
     <article id="alarm" class="tabcontent">
       <h1>Alarma</h1>
-      <input type="time" id="alarmTime" name="alarmTime" required>
-      <input class="button" type="submit" onclick="addAlarm()" value="Añadir alarma">
-      <section id="alarmList"></section>
+      <input type="time" id="alarmTime" name="alarmTime" step="2" required>
+      <input class="button" type="submit" onclick="addAlarm()"  value="Añadir alarma">
+      <table id="alarmList">
+      </table>
     </article>
     <article id="chrono" class="tabcontent">
       <h1>Cronómetro</h1>
@@ -57,6 +58,10 @@
   </main>
 
   <script src="script.js"></script>
+  <audio id="AlarmAudio">
+    <source src="/rsc/sounds/alarmSound.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 </body>
 
 </html>
