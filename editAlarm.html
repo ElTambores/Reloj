@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Clock</title>
+</head>
+
+<body>
+  <h1>Editar Alarma</h1>
+  <input type="time" id="newAlarmTime" name="newAlarmTime" step="2" value="00:00:00" required>
+  <input type="hidden" name="alarmToChange" id="alarmToChange">
+  <input class="button" type="submit" onclick="editAlarm()" value="Añadir alarma">
+  <button onclick="location.href = '/clock.html';">Volver sin guardar</button>
+  <script src="script.js"></script>
+</body>
+
+</html>

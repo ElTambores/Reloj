@@ -79,6 +79,7 @@ class Alarm {
 }
 
 function checkAlarms() {
+    getSavedAlarms();
     actualizeAlarmList();
     alarmChecker = setInterval(() => {
         let currentTime = new Date().toString().substring(16, 24);
@@ -90,10 +91,24 @@ function checkAlarms() {
     }, 1000);
 }
 
-function alarmActivation(i) {
+function getSavedAlarms() {
+    let alarmString = localStorage.getItem("alarmList");
+    const newAlarmList = alarmString.split(";");
+    for (let i = 0; i < newAlarmList.length - 1; i++) {
+        const element = newAlarmList[i].split("/");
+        let alarm = new Alarm(element[0], element[1]);
+        alarmList[i] = alarm;
+    }
+}
+
+function alarmActivation() {
     let alarmAudio = document.getElementById("AlarmAudio");
     alarmAudio.play();
-    alert("Alarma de las " + alarmList[i].time + ".");
+}
+
+function stopAlarm() {
+    let alarmAudio = document.getElementById("AlarmAudio");
+    alarmAudio.pause();
 }
 
 function addAlarm() {
@@ -102,6 +117,15 @@ function addAlarm() {
     const newAlarm = new Alarm(newAlarmTime, "Activada");
     alarmList.push(newAlarm);
     actualizeAlarmList();
+    localStorage.setItem("alarmList", alarmListToString());
+}
+
+function alarmListToString() {
+    let alarmString = "";
+    for (let i = 0; i < alarmList.length; i++) {
+        alarmString += alarmList[i].time + "/" + alarmList[i].status + ";";
+    }
+    return alarmString;
 }
 
 function actualizeAlarmList() {
@@ -113,31 +137,39 @@ function actualizeAlarmList() {
                             </tr>`;
     for (let i = 0; i < alarmList.length; i++) {
         alarmListString += `
-        <tr> <td>` + alarmList[i].time + `</td>
-        <td><button onclick="enableAlarm(`+ i + `)">` + alarmList[i].status + `</button></td>
-        <td><button onclick="deleteAlarm(`+ i + `)">Borrar alarma</button></td>
-        <td><button onclick="editeAlarm(`+ i + `)">Editar Alarma</button></td>
+        <tr> <td> ${alarmList[i].time} </td>
+        <td><button onclick="enableAlarm(${i})">${alarmList[i].status}</button></td>
+        <td><button onclick="deleteAlarm(${i})">Borrar alarma</button></td>
+        <td><button onclick="goToEdit(${i})">Editar Alarma</button></td>
       </tr>`;
     }
     document.getElementById("alarmList").innerHTML = alarmListString;
 }
 
-function enableAlarm(i){
-    if(alarmList[i].status === "Activada"){
+function enableAlarm(i) {
+    if (alarmList[i].status === "Activada") {
         alarmList[i].status = "Apagada";
-    }else{
+    } else {
         alarmList[i].status = "Activada";
     }
     actualizeAlarmList();
 }
 
-function deleteAlarm(i){
-    alarmList.splice(i,1);
+function deleteAlarm(i) {
+    alarmList.splice(i, 1);
     actualizeAlarmList();
 }
 
-function editeAlarm(i){
+function goToEdit(i) {
+    localStorage.setItem("alarmToChange", i);
+    window.location.href = "/editAlarm.html";
+}
 
+function editAlarm() {
+    getSavedAlarms();
+    let index = Number(localStorage.getItem("alarmToChange"));
+    alarmList[index].name = document.getElementById("newAlarmTime");
+    window.location.href = "./clock.html";
 }
 
 /* Functiones Cronometro */
@@ -197,7 +229,7 @@ function resetChrono() {
     isChronoStarted = false;
 }
 
-function checkCrono(){
+function checkCrono() {
     let chronoStatus = localStorage.getItem("chronoStatus");
     if (chronoStatus === "notStarted" || chronoStatus == null) {
         resetChrono();
