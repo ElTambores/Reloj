@@ -3,13 +3,13 @@
     padding: 0;
     box-sizing: border-box;
     font-family: arial;
-  }
-
-main {
-    padding-top: 50px;   
 }
 
-body, html, main{
+main {
+    padding-top: 50px;
+}
+
+body, html, main {
     background-color: rgb(52, 52, 52);
     height: 100%;
     margin: 0;
@@ -33,6 +33,7 @@ body, html, main{
 
 .tabcontent {
     text-align: center;
+    justify-content: center;
     color: white;
     display: none;
     padding: 100px 20px;
@@ -55,14 +56,18 @@ body, html, main{
     background-color: rgb(196, 154, 77);
 }
 
-p{
+p {
     font-size: larger;
 }
 
-article > *{
+article>* {
     margin: 1%;
 }
 
 table, th, td, tr {
     border: 1px solid;
-  }
+}
+
+.pauseButton, #loopNumberElement{
+    display: none;
+}

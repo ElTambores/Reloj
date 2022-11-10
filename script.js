@@ -21,7 +21,8 @@ function openPage(pageName, elmnt, color) {
 
 }
 
-document.getElementById("defaultOpen").click();
+const item = document.getElementById("defaultOpen");
+if (item) item.click();
 
 
 /*Funciones de persistencia de datos*/
@@ -32,26 +33,6 @@ function onloadFunction() {
     resetTemp();
 }
 
-function getNewTime(lastTime, currentTime) {
-    let difference = currentTime - lastTime;
-    let chronoTime = toMiliSeconds(localStorage.getItem("chronoTime"));
-    return toTime(Number(chronoTime) + Number(difference));
-}
-
-function toMiliSeconds(stringTime) {
-    const time = stringTime.split(":");
-    return (Number(time[0]) * 3600000) + (Number(time[1]) * 60000) + (Number(time[2]) * 1000) + Number(time[3]);
-}
-
-function toTime(miliseconds) {
-    let hour = Math.floor(miliseconds / 3600000);
-    let remMili = miliseconds - (hour * 3600000);
-    let minutes = Math.floor(remMili / 60000);
-    remMili = remMili - (minutes * 60000);
-    let seconds = Math.floor(remMili / 1000);
-    miliseconds = remMili - (seconds * 1000);
-    return formatTime(hour, minutes, seconds, miliseconds);
-}
 
 /* Funciones de Reloj*/
 
@@ -59,17 +40,13 @@ const interval = setInterval(() => {
     document.getElementById("hour").innerHTML = new Date().toString().substring(16, 24);
 }, 1000);
 
+
 /* Funciones Alarma */
 
 const alarmList = [];
 let alarmWaitng = false;
 let alarmChecker;
-let alarmListString = `<tr>
-                                <th>Hora</th>
-                                <th>Estado</th>
-                                <th>Borrar</th>
-                                <th>Editar</th>
-                            </tr>`;
+let alarmListString = "";
 
 class Alarm {
     constructor(time, status) {
@@ -93,6 +70,9 @@ function checkAlarms() {
 
 function getSavedAlarms() {
     let alarmString = localStorage.getItem("alarmList");
+    if (alarmString === null) {
+        return;
+    }
     const newAlarmList = alarmString.split(";");
     for (let i = 0; i < newAlarmList.length - 1; i++) {
         const element = newAlarmList[i].split("/");
@@ -103,12 +83,15 @@ function getSavedAlarms() {
 
 function alarmActivation() {
     let alarmAudio = document.getElementById("AlarmAudio");
+    alarmAudio.loop = true;
     alarmAudio.play();
+    document.getElementById("pauseAlarm").style.display = "block";
 }
 
 function stopAlarm() {
     let alarmAudio = document.getElementById("AlarmAudio");
     alarmAudio.pause();
+    document.getElementById("pauseAlarm").style.display = "none";
 }
 
 function addAlarm() {
@@ -117,7 +100,6 @@ function addAlarm() {
     const newAlarm = new Alarm(newAlarmTime, "Activada");
     alarmList.push(newAlarm);
     actualizeAlarmList();
-    localStorage.setItem("alarmList", alarmListToString());
 }
 
 function alarmListToString() {
@@ -129,20 +111,16 @@ function alarmListToString() {
 }
 
 function actualizeAlarmList() {
-    alarmListString = `<tr>
-                                <th>Hora</th>
-                                <th>Estado</th>
-                                <th>Borrar</th>
-                                <th>Editar</th>
-                            </tr>`;
+    alarmListString = "";
     for (let i = 0; i < alarmList.length; i++) {
         alarmListString += `
-        <tr> <td> ${alarmList[i].time} </td>
-        <td><button onclick="enableAlarm(${i})">${alarmList[i].status}</button></td>
-        <td><button onclick="deleteAlarm(${i})">Borrar alarma</button></td>
-        <td><button onclick="goToEdit(${i})">Editar Alarma</button></td>
-      </tr>`;
+        <div class="alarmItem"> <span class="alarmElement"> ${alarmList[i].time} </span>
+        <span class="alarmElement"><button onclick="enableAlarm(${i})">${alarmList[i].status}</button></span>
+        <span class="alarmElement"><button onclick="deleteAlarm(${i})">Borrar alarma</button></span>
+        <span class="alarmElement"><button onclick="goToEdit(${i})">Editar Alarma</button></span>
+      </div>`;
     }
+    localStorage.setItem("alarmList", alarmListToString());
     document.getElementById("alarmList").innerHTML = alarmListString;
 }
 
@@ -162,15 +140,17 @@ function deleteAlarm(i) {
 
 function goToEdit(i) {
     localStorage.setItem("alarmToChange", i);
-    window.location.href = "/editAlarm.html";
+    window.location.href = "./editAlarm.html";
 }
 
 function editAlarm() {
     getSavedAlarms();
     let index = Number(localStorage.getItem("alarmToChange"));
-    alarmList[index].name = document.getElementById("newAlarmTime");
+    alarmList[index].time = document.getElementById("newAlarmTime").value;
+    localStorage.setItem("alarmList", alarmListToString());
     window.location.href = "./clock.html";
 }
+
 
 /* Functiones Cronometro */
 
@@ -190,7 +170,6 @@ function startChrono() {
 
         chrono = setInterval(() => {
             miliseconds = Date.now() - startTime + initMiliseconds;
-
             if (miliseconds > 999) {
                 initMiliseconds = 0;
                 startTime = Date.now();
@@ -206,10 +185,8 @@ function startChrono() {
             }
             let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
             localStorage.setItem("chronoTime", formatedTime);
-            localStorage.setItem("savedChronoTime", new Date());
             localStorage.setItem("chronoStatus", "play");
             document.getElementById("chronoCurrentTimer").innerHTML = formatedTime;
-
         }, 1);
     }
 }
@@ -224,7 +201,6 @@ function resetChrono() {
     localStorage.setItem("chronoStatus", "notStarted");
     clearInterval(chrono);
     localStorage.setItem("chronoTime", "00:00:00:000");
-    localStorage.setItem("savedChronoTime", "00:00:00:000");
     document.getElementById("chronoCurrentTimer").innerHTML = "00:00:00:000";
     isChronoStarted = false;
 }
@@ -235,10 +211,6 @@ function checkCrono() {
         resetChrono();
     } else {
         if (chronoStatus === "play") {
-            // let lastTime = localStorage.getItem("savedChronoTime");
-            // let currentTime = new Date();
-            // let currentChronoTime = getNewTime(lastTime, currentTime);
-            // document.getElementById("chronoCurrentTimer").innerHTML = currentChronoTime;
             document.getElementById("chronoCurrentTimer").innerHTML = localStorage.getItem("chronoTime");
             startChrono();
         } else if (chronoStatus === "pause") {
@@ -248,19 +220,18 @@ function checkCrono() {
     }
 }
 
+
 /*Funciones Temporizador*/
 
 let temp;
 let loopModeActivated = false;
+let limitedloopModeActivated = false;
 let intervalModeActivated = false;
 let isIntervalWaiting = false;
-let intervalTempTime;
-let mainTempTime;
-let currentTempTime;
 let isTempStarted = false;
 
 function startTemp() {
-    let tempInput = document.getElementById("tempTime").value;
+    let tempInput = checkIntervalMode();;
     if (tempInput === "") {
         return;
     }
@@ -270,7 +241,6 @@ function startTemp() {
         if (tempTime === "00:00:00:000") {
             tempTime = tempInput;
         }
-        currentTempTime = tempTime;
         tempTime = tempTime.split(":");
         let startTime = Date.now();
         let hours = parseInt(tempTime[0]);
@@ -284,29 +254,10 @@ function startTemp() {
 
         temp = setInterval(() => {
             if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds < 0) {
-                resetTemp();
-                if (isIntervalWaiting) {
-                    isIntervalWaiting = false;
-                    localStorage.setItem("tempTime", intervalTempTime);
-                    startTemp();
-                }
-                else if (loopModeActivated) {
-                    if (isIntervalWaiting) {
-                        isIntervalWaiting = false;
-                        localStorage.setItem("tempTime", intervalTempTime);
-                        startTemp();
-                    } else {
-
-                    }
-                    localStorage.setItem("tempTime", currentTempTime);
-                    startTemp();
-                } else {
-                    document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
-                }
+                checkIfEndLoopOrInterval();
             }
             else {
                 miliseconds = 999 - (Date.now() - startTime + initMiliseconds);
-
                 if (miliseconds < 0) {
                     initMiliseconds = 0;
                     startTime = Date.now();
@@ -320,14 +271,47 @@ function startTemp() {
                     minutes = 59;
                     hours--;
                 }
-                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
+                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);              
                 localStorage.setItem("tempTime", formatedTime);
-                localStorage.setItem("savedTempTime", new Date().toString().substring(16, 24));
                 document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
             }
         }, 1);
     }
 }
+
+function checkIntervalMode() {
+    let tempInput;
+    if (intervalModeActivated && !isIntervalWaiting) {
+        tempInput = localStorage.getItem("tempTimeInterval");
+    } else {
+        tempInput = document.getElementById("tempTime").value;
+    }
+    return tempInput;
+}
+
+function checkIfEndLoopOrInterval() {
+    loopReset()
+    if (intervalModeActivated && isIntervalWaiting) {
+        isIntervalWaiting = false;
+        startTemp();
+    }
+    else if (loopModeActivated) {
+        if (intervalModeActivated) {
+            if (isIntervalWaiting) {
+                isIntervalWaiting = false;
+            } else {
+                isIntervalWaiting = true;
+            }
+            startTemp();
+        }
+        startTemp();
+    } else {
+        tempSound();
+        resetTemp();
+        document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
+    }
+}
+
 
 function stopTemp() {
     localStorage.setItem("tempPause", true);
@@ -336,12 +320,19 @@ function stopTemp() {
 }
 
 function resetTemp() {
-    localStorage.setItem("tempPause", true);
-    clearInterval(temp);
+    stopTemp();
     localStorage.setItem("tempTime", "00:00:00:000");
-    localStorage.setItem("savedTempTime", "00:00:00:000");
     document.getElementById("tempCurrentTimer").innerHTML = "00:00:00:000";
-    isTempStarted = false;
+    loopModeActivated = true;
+    intervalModeActivated = true;
+    loopOnOff();
+    intervalOnOff();
+}
+
+function loopReset() {
+    stopTemp();
+    localStorage.setItem("tempTime", "00:00:00:000");
+    document.getElementById("tempCurrentTimer").innerHTML = "00:00:00:000";
 }
 
 function loopOnOff() {
@@ -350,6 +341,17 @@ function loopOnOff() {
         document.getElementById("loopButton").innerHTML = "Modo bucle: Encendido";
     } else {
         document.getElementById("loopButton").innerHTML = "Modo bucle: Apagado";
+    }
+}
+
+function limtedLoopOnOff() {
+    limitedloopModeActivated = !limitedloopModeActivated;
+    if (limitedloopModeActivated) {
+        document.getElementById("limitedLoopButton").innerHTML = "Modo bucles limitados: Encendido";
+        document.getElementById("loopNumberElement").style.display = "block";
+    } else {
+        document.getElementById("limitedLoopButton").innerHTML = "Modo bucles limitados: Apagado";
+        document.getElementById("loopNumberElement").style.display = "none";
     }
 }
 
@@ -363,6 +365,20 @@ function intervalOnOff() {
         document.getElementById("intervalButton").innerHTML = "Modo intervalo: Apagado";
         localStorage.setItem("tempTimeInterval", "00:00:00:000");
     }
+}
+
+
+function tempSound() {
+    let tempAudio = document.getElementById("TempAudio");
+    tempAudio.loop = true;
+    tempAudio.play();
+    document.getElementById("tempAudioButton").style.display = "block";
+}
+
+function tempSoundStop() {
+    let tempAudio = document.getElementById("TempAudio");
+    tempAudio.pause();
+    document.getElementById("tempAudioButton").style.display = "none";
 }
 
 /* Generic functions */
