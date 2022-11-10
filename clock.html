@@ -11,57 +11,60 @@
 
 <body onload="onloadFunction()">
   <header>
-    <button class="tablink" onclick="openPage('clock', this, 'red')" >Reloj</button>
-    <button class="tablink" onclick="openPage('alarm', this, 'blue')" >Alarma</button>
-    <button class="tablink" onclick="openPage('chrono', this, 'green')">Cronómetro</button>
-    <button class="tablink" onclick="openPage('temp', this, 'orange')" id="defaultOpen">Temporizador</button>
+    <nav>
+      <button class="tablink" onclick="openPage('clock', this, '#C50143')">Reloj</button>
+      <button class="tablink" onclick="openPage('alarm', this, '#0250BC')">Alarma</button>
+      <button class="tablink" onclick="openPage('chrono', this, '#2BC4A2')">Cronómetro</button>
+      <button class="tablink" onclick="openPage('temp', this, '#E17F2E')" id="defaultOpen">Temporizador</button>
+    </nav>
   </header>
   <main>
     <article id="clock" class="tabcontent">
-      <h1>Reloj</h1>
-      <p id="hour">00:00:00</p>
+      <div id="hourContainer">
+        <p id="hour">00:00:00</p>
+      </div>
     </article>
-    
+
     <article id="alarm" class="tabcontent">
-      <h1>Alarma</h1>
       <input type="time" id="alarmTime" name="alarmTime" step="2" value="00:00:00" required>
-      <input class="button" type="submit" onclick="addAlarm()"  value="Añadir alarma">
+      <input class="button" type="submit" onclick="addAlarm()" value="Añadir alarma">
       <button class="pauseButton" id="pauseAlarm" name="pauseAlarm" onclick="stopAlarm()">Parar Alarma</button>
       <section id="alarmList">
-          
+
       </section>
     </article>
     <article id="chrono" class="tabcontent">
-      <h1>Cronómetro</h1>
+      <label for="chronoTime"> Tiempo del cronometro:</label>
+      <p id="chronoCurrentTimer"></p>
       <input class="boton" type="submit" onclick="startChrono()" value="Iniciar cronómetro">
       <input class="boton" type="submit" onclick="stopChrono()" value="Pausar cronómetro">
       <input class="boton" type="submit" onclick="resetChrono()" value="Resetear cronómetro">
       <br>
-      <label for="chronoTime"> Tiempo del cronometro:</label>
-      <p id="chronoCurrentTimer"></p>
+
 
     </article>
     <article id="temp" class="tabcontent">
-      <h1>Temporizador </h1>
+      <label for="tempCurrentTimer"> Tiempo del temporizador:</label>
+      <p id="tempCurrentTimer" name="tempCurrentTimer"></p>
       <input type="time" id="tempTime" name="tempTime" step="0.1" value="00:00:00" required>
       <br>
       <input class="button" type="submit" onclick="startTemp()" value="Iniciar Temporizador">
       <input class="button" type="submit" onclick="stopTemp()" value="Pausar temporizador">
       <input class="button" id="resetTempButton" type="submit" onclick="resetTemp()" value="Resetear temporizador">
-      <button class="pauseButton" id="tempAudioButton" name="tempAudioButton" onclick="tempSoundStop()">Parar Sonido</button>
+      <button class="pauseButton" id="tempAudioButton" name="tempAudioButton" onclick="tempSoundStop()">Parar
+        Sonido</button>
       <br>
       <button id="loopButton" name="loopButton" onclick="loopOnOff()">Modo bucle: Apagado</button>
-      <button id="limitedLoopButton" name="limitedLoopButton" onclick="limtedLoopOnOff()">Modo bucles limitados: Apagado</button>
+      <button id="limitedLoopButton" name="limitedLoopButton" onclick="limtedLoopOnOff()">Modo bucles limitados:
+        Apagado</button>
       <div id="loopNumberElement">
         <label for="loopNumber">Numero de bucles</label>
-      <input type="number" id="loopNumber" name="loopNumber">
+        <input type="number" id="loopNumber" name="loopNumber">
       </div>
       <br>
       <input type="time" id="tempTimeInterval" name="tempTimeInterval" step="0.1" value="00:00:00">
       <button id="intervalButton" name="intervalButton" onclick="intervalOnOff()">Modo intervalo: Apagado</button>
       <br>
-      <label for="tempCurrentTimer"> Tiempo del temporizador:</label>
-      <p id="tempCurrentTimer" name="tempCurrentTimer"></p>
     </article>
   </main>
 

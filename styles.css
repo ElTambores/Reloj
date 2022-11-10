@@ -1,73 +1,129 @@
+/* Este .CSS sigue la guia de estilo de firefox basandose en la información de este enlace https://mozilla.design/firefox/ */
+
+@font-face {
+    font-family: MenuFont;
+    src: url(./rsc/fonts/Metropolis-Bold.otf);
+}
+
+@font-face {
+    font-family: TextFont;
+    src: url(./rsc/fonts/Inter-Bold.otf);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: arial;
+    font-family: TextFont;
+    font-size: 20px;
 }
 
-main {
-    padding-top: 50px;
+/* CSS header*/
+header {
+    position: sticky;
+    top: 0;
+}
+
+header nav button {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    margin: 0;
+}
+
+.tablink {
+    background-color: black;
+    font-family: MenuFont;
+    float: left;
+    border: 1px solid;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 30px;
+    width: 25%;
+}
+
+.tablink:hover {
+    background-color: rgb(69, 69, 69);
+}
+
+
+/* CSS body*/
+#clock {
+    background-color: #FF505F;
+}
+
+#chrono {
+    background-color: #53FEBE;
+}
+
+#alarm {
+    background-color: #0290EE;
+}
+
+#temp {
+    background-color: #FFBD4F;
 }
 
 body, html, main {
     background-color: rgb(52, 52, 52);
     height: 100%;
     margin: 0;
-    font-family: Arial;
-}
-
-.tablink {
-    background-color: rgb(189, 189, 189);
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    font-size: 17px;
-    width: 25%;
-}
-
-.tablink:hover {
-    background-color: #777;
 }
 
 .tabcontent {
-    text-align: center;
-    justify-content: center;
-    color: white;
     display: none;
+    text-align: center;
     padding: 100px 20px;
     height: 100%;
 }
 
-#clock {
-    background-color: rgb(187, 74, 74);
-}
-
-#chrono {
-    background-color: rgb(101, 167, 101);
-}
-
-#alarm {
-    background-color: rgb(86, 86, 160);
-}
-
-#temp {
-    background-color: rgb(196, 154, 77);
+h1 {
+    font-size: 60px;
+    text-align: center;
+    font-family: MenuFont;
+    padding-bottom: 20px;
 }
 
 p {
-    font-size: larger;
+    font-size: 100px;
+}
+
+button, input {
+    padding: 10px;
 }
 
 article>* {
     margin: 1%;
 }
 
-table, th, td, tr {
-    border: 1px solid;
+.pauseButton, #loopNumberElement {
+    display: none;
 }
 
-.pauseButton, #loopNumberElement{
-    display: none;
+/* Media queries*/
+@media all and (max-width: 850px) {
+    nav {
+        display: flex;
+        flex-flow: column wrap;
+        padding: 0;
+    }
+
+    .tablink {
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 30px;
+    }
+    p {
+        font-size: 30px;
+    }
+
+    button, input {
+        font-size: 20px;
+    }
+
+    .tabcontent {
+        padding: 30px 0px;
+    }
 }

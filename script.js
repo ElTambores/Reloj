@@ -11,6 +11,7 @@ function openPage(pageName, elmnt, color) {
     let tablinks = document.getElementsByClassName("tablink");
     for (let i = 0; i < tablinks.length; i++) {
         tablinks[i].style.backgroundColor = "";
+        tablinks[i].style.color = "white";
     }
 
     // Se muestra la pestaña asociada al boton clicado
@@ -18,6 +19,7 @@ function openPage(pageName, elmnt, color) {
 
     // Se define el color de fondo del boton según corresponda
     elmnt.style.backgroundColor = color;
+    elmnt.style.color = "black";
 
 }
 
