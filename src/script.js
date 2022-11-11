@@ -1,6 +1,6 @@
 /* Estilo */
 
-// Se guarda el botón de modo oscuro
+// Se obtiene y guarda el botón de modo oscuro
 const btn = document.querySelector('.btn-toggle');
 // Se comprueba que exista.
 if (btn) {
@@ -8,20 +8,6 @@ if (btn) {
         // Si existe se pone en modo noche si no estaba activado. Si lo estaba se vuelve al modo por defecto.
         document.body.classList.toggle('dark-theme');
     })
-}
-
-let darkMode = false;
-function darkModeOnOff(){
-    darkMode = !darkMode;
-    if(darkMode){
-        document.getElementById("a").style.filter = "invert(100%);";
-        btn.value = "Modo Claro";
-        btn.style.color = "0A214D";
-        btn.style.backgroundColor = "ACF1FF";
-    }else{
-        btn.style.color = "ACF1FF";
-        btn.style.backgroundColor = "0A214D";
-    }
 }
 
 function openPage(pageName, elmnt) {
@@ -42,7 +28,7 @@ function openPage(pageName, elmnt) {
     // Se muestra la pestaña asociada al boton clicado
     document.getElementById(pageName).style.display = "block";
 
-    // Se define el color de fondo del boton según corresponda
+    // Se define el color de fondo del boton de la pestaña activa
     elmnt.style.backgroundColor = "#005E5D";
     elmnt.style.color = "#E3FFF3";
 }
@@ -108,6 +94,7 @@ function getSavedAlarms() {
 }
 
 function alarmActivation() {
+    notifyMe("Alarma activada!")
     let alarmAudio = document.getElementById("AlarmAudio");
     alarmAudio.loop = true;
     alarmAudio.play();
@@ -140,11 +127,11 @@ function actualizeAlarmList() {
     alarmListString = "";
     for (let i = 0; i < alarmList.length; i++) {
         alarmListString += `
-        <div class="alarmItem"> <span class="alarmElement"> ${alarmList[i].time} </span>
-        <span class="alarmElement"><button onclick="enableAlarm(${i})">${alarmList[i].status}</button></span>
-        <span class="alarmElement"><button onclick="deleteAlarm(${i})">Borrar alarma</button></span>
-        <span class="alarmElement"><button onclick="goToEdit(${i})">Editar Alarma</button></span>
-      </div>`;
+        <div class="alarmItem"> <span class="alarmTimeElement">${alarmList[i].time}</span>
+        <span class="alarmButtonsElement"><button class="alarmElement" onclick="enableAlarm(${i})">${alarmList[i].status}</button>
+        <button class="alarmElement" onclick="deleteAlarm(${i})">Borrar alarma</button>
+        <button class="alarmElement" onclick="goToEdit(${i})">Editar Alarma</button></span>
+        </div>`;
     }
     localStorage.setItem("alarmList", alarmListToString());
     document.getElementById("alarmList").innerHTML = alarmListString;
@@ -174,7 +161,7 @@ function editAlarm() {
     let index = Number(localStorage.getItem("alarmToChange"));
     alarmList[index].time = document.getElementById("newAlarmTime").value;
     localStorage.setItem("alarmList", alarmListToString());
-    window.location.href = "./clock.html";
+    window.location.href = "./index.html";
 }
 
 
@@ -255,6 +242,7 @@ let limitedloopModeActivated = false;
 let intervalModeActivated = false;
 let isIntervalWaiting = false;
 let isTempStarted = false;
+let isTempAlertActive = false;
 
 function startTemp() {
     let tempInput = checkIntervalMode();;
@@ -277,32 +265,41 @@ function startTemp() {
             initMiliseconds = parseInt(tempTime[3]);
         }
         let miliseconds = 0;
-
+        if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds == 0) {
+            resetTemp();
+            return;
+        }
         temp = setInterval(() => {
             if (hours == 0 && minutes == 0 && seconds == 0 && miliseconds < 0) {
-                checkIfEndLoopOrInterval();
-            }
+            notifyMe("Intervalo terminado!");
+            checkIfEndLoopOrInterval();
+        }
             else {
-                miliseconds = 999 - (Date.now() - startTime + initMiliseconds);
-                if (miliseconds < 0) {
-                    initMiliseconds = 0;
-                    startTime = Date.now();
-                    seconds--;
+            if (isTempAlertActive) {
+                if (seconds == tempAler) {
+                    tempSound();
                 }
-                if (seconds < 0) {
-                    seconds = 59;
-                    minutes--;
-                }
-                if (minutes < 0) {
-                    minutes = 59;
-                    hours--;
-                }
-                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
-                localStorage.setItem("tempTime", formatedTime);
-                document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
             }
-        }, 1);
-    }
+            miliseconds = 999 - (Date.now() - startTime + initMiliseconds);
+            if (miliseconds < 0) {
+                initMiliseconds = 0;
+                startTime = Date.now();
+                seconds--;
+            }
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+            }
+            if (minutes < 0) {
+                minutes = 59;
+                hours--;
+            }
+            let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
+            localStorage.setItem("tempTime", formatedTime);
+            document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
+        }
+    }, 1);
+}
 }
 
 function checkIntervalMode() {
@@ -317,6 +314,7 @@ function checkIntervalMode() {
 
 function checkIfEndLoopOrInterval() {
     loopReset()
+    tempSound();
     if (intervalModeActivated && isIntervalWaiting) {
         isIntervalWaiting = false;
         startTemp();
@@ -332,7 +330,6 @@ function checkIfEndLoopOrInterval() {
         }
         startTemp();
     } else {
-        tempSound();
         resetTemp();
         document.getElementById("tempCurrentTimer").innerHTML = "Fin del temporizador";
     }
@@ -393,6 +390,15 @@ function intervalOnOff() {
     }
 }
 
+function loopOnOff() {
+    loopModeActivated = !loopModeActivated;
+    if (loopModeActivated) {
+        document.getElementById("loopButton").innerHTML = "Modo bucle: Encendido";
+    } else {
+        document.getElementById("loopButton").innerHTML = "Modo bucle: Apagado";
+    }
+}
+
 
 function tempSound() {
     let tempAudio = document.getElementById("TempAudio");
@@ -406,6 +412,7 @@ function tempSoundStop() {
     tempAudio.pause();
     document.getElementById("tempAudioButton").style.display = "none";
 }
+
 
 /* Generic functions */
 
@@ -436,4 +443,23 @@ function formatSecMinHour(format) {
         format = "0" + format;
     }
     return format;
+}
+
+function notifyMe(msg) {
+    if (!("Notification" in window)) {
+        // Check if the browser supports notifications
+        alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+        // Check whether notification permissions have already been granted;
+        // if so, create a notification
+        const notification = new Notification(msg);
+    } else if (Notification.permission !== "denied") {
+        // We need to ask the user for permission
+        Notification.requestPermission().then((permission) => {
+            // If the user accepts, let's create a notification
+            if (permission === "granted") {
+                const notification = new Notification(msg);
+            }
+        });
+    }
 }

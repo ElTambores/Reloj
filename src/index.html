@@ -35,51 +35,53 @@
       <button class="tablink" onclick="openPage('temp', this)">Temporizador</button>
     </nav>
   </header>
-  <main class="dark-theme || light-theme">
+  <main>
     <button id="darkMode" class="btn-toggle" onclick="darkModeOnOff()">Modo oscuro</button>
     <article id="clock" class="tabcontent">
       <img id="a" src="/rsc/img/time.png" alt="icono de un reloj">
-      <p id="hour">00:00:00</p>
+      <div class="timeOutput" id="hour">00:00:00</div>
     </article>
     <article id="alarm" class="tabcontent">
       <img src="/rsc/img/alarm.png" alt="icono de un despertador">
-      <section id="alarmPanel">
+      <h2>Defina la hora de la nueva alarma:</h2>
+      <section id="alarmInputPanel">
         <input type="time" id="alarmTime" name="alarmTime" step="2" value="00:00:00" required>
         <button onclick="addAlarm()">Añadir alarma</button>
+      </section>
+      <section class="pausePanel">
         <button class="pauseButton" id="pauseAlarm" name="pauseAlarm" onclick="stopAlarm()">Parar Alarma</button>
       </section>
       <section id="alarmList"></section>
     </article>
     <article id="chrono" class="tabcontent">
       <img src="/rsc/img/chrono.png" alt="icono de un reloj">
-      <section id="">
-        <label for="chronoTime"> Tiempo del cronometro:</label>
-        <p id="chronoCurrentTimer"></p>
+      <section id="chronoInfoPanel">
+        <div class="timeOutput" id="chronoCurrentTimer"></div>
       </section>
-      <section>
+      <section id="chronoControlPanel">
         <button onclick="startChrono()">Iniciar cronómetro</button>
         <button onclick="stopChrono()">Pausar cronómetro</button>
         <button onclick="resetChrono()">Resetear cronómetro</button>
       </section>
     </article>
     <article id="temp" class="tabcontent">
-      <label for="tempCurrentTimer"> Tiempo del temporizador:</label>
-      <p id="tempCurrentTimer" name="tempCurrentTimer"></p>
-      <input type="time" id="tempTime" name="tempTime" step="0.1" value="00:00:00" required>
+      <img src="/rsc/img/temp.png" alt="icono de un temporizador">
+      <section id="tempInfoPanel">
+        <div class="timeOutput" id="tempCurrentTimer" name="tempCurrentTimer">
+      </section>
+      <section id="tempInputPanel">
+        <input type="time" id="tempTime" name="tempTime" step="0.1" value="00:00:00" required>
+      </section>
       <section id="tempMainControl">
         <button onclick="startTemp()">Iniciar Temporizador</button>
         <button onclick="stopTemp()">Pausar temporizador</button>
         <button id="resetTempButton" onclick="resetTemp()">Resetear temporizador</button>
       </section>
-      <button class="pauseButton" id="tempAudioButton" onclick="tempSoundStop()">Parar Temporizador</button>
+      <section class="pausePanel">
+        <button class="pauseButton" id="tempAudioButton" onclick="tempSoundStop()">Parar Sonido</button>
+      </section>
       <section id="tempLoopControl">
         <button id="loopButton" name="loopButton" onclick="loopOnOff()">Modo bucle: Apagado</button>
-        <button id="limitedLoopButton" name="limitedLoopButton" onclick="limtedLoopOnOff()">Modo bucles limitados:
-          Apagado</button>
-        <div id="loopNumberElement">
-          <label for="loopNumber">Numero de bucles</label>
-          <input type="number" id="loopNumber" name="loopNumber">
-        </div>
       </section>
       <section id="tempIntervalControl">
         <input type="time" id="tempTimeInterval" name="tempTimeInterval" step="0.1" value="00:00:00">

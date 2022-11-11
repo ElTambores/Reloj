@@ -1,0 +1,1 @@
+La estetica de esta página sigue la guia de estilo de firefox basandose en la información de este enlace https://mozilla.design/firefox/.

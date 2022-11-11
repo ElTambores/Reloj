@@ -11,10 +11,18 @@
 
 <body>
   <h1>Editar Alarma</h1>
-  <input type="time" id="newAlarmTime" name="newAlarmTime" step="2" value="00:00:00" required>
-  <input type="hidden" name="alarmToChange" id="alarmToChange">
-  <button onclick="editAlarm()"> Modificar alarma</button>
-  <button onclick="location.href = '/clock.html';">Volver sin guardar</button>
+  <main>
+    <article>
+      <section>
+        <input type="time" id="newAlarmTime" name="newAlarmTime" step="2" value="00:00:00" required>
+        <input type="hidden" name="alarmToChange" id="alarmToChange">
+      </section>
+      <section>
+        <button onclick="editAlarm()"> Modificar alarma</button>
+        <button onclick="location.href = '/index.html';">Volver sin guardar</button>
+      </section>
+    </article>
+  </main>
   <script src="script.js"></script>
 </body>
 
