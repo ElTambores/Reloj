@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <link rel="apple-touch-icon" sizes="57x57" href="/rsc/img/favicons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/rsc/img/favicons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/rsc/img/favicons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/rsc/img/favicons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/rsc/img/favicons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/rsc/img/favicons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/rsc/img/favicons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/rsc/img/favicons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/rsc/img/favicons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/rsc/img/favicons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/rsc/img/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/rsc/img/favicons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/rsc/img/favicons/favicon-16x16.png">
+  <link rel="manifest" href="/rsc/img/favicons/manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/rsc/img/favicons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reloj APP</title>
+</head>
+
+<body onload="onloadFunction()">
+  <header>
+    <nav>
+      <button class="tablink" onclick="openPage('clock', this)" id="defaultOpen"> Reloj</button>
+      <button class="tablink" onclick="openPage('alarm', this)">Alarma</button>
+      <button class="tablink" onclick="openPage('chrono', this)">Cronómetro</button>
+      <button class="tablink" onclick="openPage('temp', this)">Temporizador</button>
+    </nav>
+  </header>
+  <main class="dark-theme || light-theme">
+    <button id="darkMode" class="btn-toggle" onclick="darkModeOnOff()">Modo oscuro</button>
+    <article id="clock" class="tabcontent">
+      <img id="a" src="/rsc/img/time.png" alt="icono de un reloj">
+      <p id="hour">00:00:00</p>
+    </article>
+    <article id="alarm" class="tabcontent">
+      <img src="/rsc/img/alarm.png" alt="icono de un despertador">
+      <section id="alarmPanel">
+        <input type="time" id="alarmTime" name="alarmTime" step="2" value="00:00:00" required>
+        <button onclick="addAlarm()">Añadir alarma</button>
+        <button class="pauseButton" id="pauseAlarm" name="pauseAlarm" onclick="stopAlarm()">Parar Alarma</button>
+      </section>
+      <section id="alarmList"></section>
+    </article>
+    <article id="chrono" class="tabcontent">
+      <img src="/rsc/img/chrono.png" alt="icono de un reloj">
+      <section id="">
+        <label for="chronoTime"> Tiempo del cronometro:</label>
+        <p id="chronoCurrentTimer"></p>
+      </section>
+      <section>
+        <button onclick="startChrono()">Iniciar cronómetro</button>
+        <button onclick="stopChrono()">Pausar cronómetro</button>
+        <button onclick="resetChrono()">Resetear cronómetro</button>
+      </section>
+    </article>
+    <article id="temp" class="tabcontent">
+      <label for="tempCurrentTimer"> Tiempo del temporizador:</label>
+      <p id="tempCurrentTimer" name="tempCurrentTimer"></p>
+      <input type="time" id="tempTime" name="tempTime" step="0.1" value="00:00:00" required>
+      <section id="tempMainControl">
+        <button onclick="startTemp()">Iniciar Temporizador</button>
+        <button onclick="stopTemp()">Pausar temporizador</button>
+        <button id="resetTempButton" onclick="resetTemp()">Resetear temporizador</button>
+      </section>
+      <button class="pauseButton" id="tempAudioButton" onclick="tempSoundStop()">Parar Temporizador</button>
+      <section id="tempLoopControl">
+        <button id="loopButton" name="loopButton" onclick="loopOnOff()">Modo bucle: Apagado</button>
+        <button id="limitedLoopButton" name="limitedLoopButton" onclick="limtedLoopOnOff()">Modo bucles limitados:
+          Apagado</button>
+        <div id="loopNumberElement">
+          <label for="loopNumber">Numero de bucles</label>
+          <input type="number" id="loopNumber" name="loopNumber">
+        </div>
+      </section>
+      <section id="tempIntervalControl">
+        <input type="time" id="tempTimeInterval" name="tempTimeInterval" step="0.1" value="00:00:00">
+        <button id="intervalButton" name="intervalButton" onclick="intervalOnOff()">Modo intervalo: Apagado</button>
+      </section>
+    </article>
+  </main>
+
+  <script src="script.js"></script>
+  <audio id="AlarmAudio">
+    <source src="/rsc/sounds/alarmSound.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="TempAudio">
+    <source src="/rsc/sounds/tempSound.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+</body>
+
+</html>

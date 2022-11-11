@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: MenuFont;
-    src: url(./rsc/fonts/Metropolis-Bold.otf);
+    src: url(/rsc/fonts/Metropolis-Bold.otf);
 }
 
 @font-face {
     font-family: TextFont;
-    src: url(./rsc/fonts/Inter-Bold.otf);
+    src: url(/rsc/fonts/Inter-Bold.otf);
 }
 
 * {
@@ -32,7 +32,6 @@ header nav button {
 }
 
 .tablink {
-    background-color: black;
     font-family: MenuFont;
     float: left;
     border: 1px solid;
@@ -40,6 +39,7 @@ header nav button {
     padding: 14px 16px;
     font-size: 30px;
     width: 25%;
+    border-radius: 0px;
 }
 
 .tablink:hover {
@@ -48,26 +48,25 @@ header nav button {
 
 
 /* CSS body*/
-#clock {
-    background-color: #FF505F;
-}
 
-#chrono {
-    background-color: #53FEBE;
-}
-
-#alarm {
-    background-color: #0290EE;
-}
-
-#temp {
-    background-color: #FFBD4F;
+body {
+    background-color: #E3FFF3;
 }
 
 body, html, main {
-    background-color: rgb(52, 52, 52);
     height: 100%;
     margin: 0;
+}
+
+body.dark-theme {
+    color: #E3FFF3;
+    background-color: #021814;
+}
+
+#darkMode {
+    position: fixed;
+    bottom: 1%;
+    left: 1%;
 }
 
 .tabcontent {
@@ -84,12 +83,23 @@ h1 {
     padding-bottom: 20px;
 }
 
+img {
+    width: 10%;
+}
+
 p {
     font-size: 100px;
 }
 
-button, input {
+button {
+    background-color: #0A214D;
+    color: #ACF1FF;
     padding: 10px;
+    border-radius: 8px;
+}
+
+article {
+    display: flex;
 }
 
 article>* {
@@ -111,10 +121,11 @@ article>* {
     .tablink {
         width: 100%;
     }
-    
+
     h1 {
         font-size: 30px;
     }
+
     p {
         font-size: 30px;
     }

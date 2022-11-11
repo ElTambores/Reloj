@@ -1,5 +1,30 @@
 /* Estilo */
-function openPage(pageName, elmnt, color) {
+
+// Se guarda el botón de modo oscuro
+const btn = document.querySelector('.btn-toggle');
+// Se comprueba que exista.
+if (btn) {
+    btn.addEventListener('click', function () {
+        // Si existe se pone en modo noche si no estaba activado. Si lo estaba se vuelve al modo por defecto.
+        document.body.classList.toggle('dark-theme');
+    })
+}
+
+let darkMode = false;
+function darkModeOnOff(){
+    darkMode = !darkMode;
+    if(darkMode){
+        document.getElementById("a").style.filter = "invert(100%);";
+        btn.value = "Modo Claro";
+        btn.style.color = "0A214D";
+        btn.style.backgroundColor = "ACF1FF";
+    }else{
+        btn.style.color = "ACF1FF";
+        btn.style.backgroundColor = "0A214D";
+    }
+}
+
+function openPage(pageName, elmnt) {
     // Cada vez que se pulsa un boton del navegador se ponen todos los estilos en none.
     let tabcontent = document.getElementsByClassName("tabcontent");
 
@@ -7,20 +32,19 @@ function openPage(pageName, elmnt, color) {
         tabcontent[i].style.display = "none";
     }
 
-    // Cada vez que se pulsa un boton del navegador se quitan todos los fondos
+    // Cada vez que se pulsa un boton del navegador el resto se ponen en negro.
     let tablinks = document.getElementsByClassName("tablink");
     for (let i = 0; i < tablinks.length; i++) {
-        tablinks[i].style.backgroundColor = "";
-        tablinks[i].style.color = "white";
+        tablinks[i].style.backgroundColor = "#083F37";
+        tablinks[i].style.color = "#068989";
     }
 
     // Se muestra la pestaña asociada al boton clicado
     document.getElementById(pageName).style.display = "block";
 
     // Se define el color de fondo del boton según corresponda
-    elmnt.style.backgroundColor = color;
-    elmnt.style.color = "black";
-
+    elmnt.style.backgroundColor = "#005E5D";
+    elmnt.style.color = "#E3FFF3";
 }
 
 const item = document.getElementById("defaultOpen");
@@ -273,7 +297,7 @@ function startTemp() {
                     minutes = 59;
                     hours--;
                 }
-                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);              
+                let formatedTime = formatTime(hours, minutes, seconds, miliseconds);
                 localStorage.setItem("tempTime", formatedTime);
                 document.getElementById("tempCurrentTimer").innerHTML = formatedTime;
             }
